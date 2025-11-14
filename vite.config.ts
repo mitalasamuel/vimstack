@@ -57,13 +57,37 @@ export default defineConfig({
     build: {
         rollupOptions: {
             output: {
-                manualChunks: {
-                    vendor: ['react', 'react-dom'],
-                    ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
-                    utils: ['date-fns', 'clsx']
-                }
+                manualChunks(id) {
+                    if (id.includes('node_modules')) {
+                        if (id.includes('react') || id.includes('react-dom')) {
+                            return 'vendor-react';
+                        }
+                        if (id.includes('@radix-ui')) {
+                            return 'vendor-radix';
+                        }
+                        if (id.includes('date-fns') || id.includes('clsx')) {
+                            return 'vendor-utils';
+                        }
+                        if (id.includes('chart.js')) {
+                            return 'vendor-charts';
+                        }
+                        return 'vendor';
+                    }
+
+                    if (id.includes('/resources/js/pages/')) {
+                        const segments = id.split('/resources/js/pages/')[1]?.split('/');
+                        return segments && segments.length ? `page-${segments[0].toLowerCase()}` : 'pages';
+                    }
+
+                    if (id.includes('/resources/js/components/')) {
+                        return 'components';
+                    }
+
+                    return undefined;
+                },
             },
         },
         assetsDir: 'assets',
+        chunkSizeWarningLimit: 1200,
     }
 });
