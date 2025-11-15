@@ -6,16 +6,38 @@ use Illuminate\Http\Request;
 define('LARAVEL_START', microtime(true));
 
 // Determine if the application is in maintenance mode...
-if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
+$maintenance = __DIR__.'/../storage/framework/maintenance.php';
+if (file_exists($maintenance)) {
     require $maintenance;
 }
 
 // Register the Composer autoloader...
-require __DIR__.'/../vendor/autoload.php';
+$autoload = __DIR__.'/../vendor/autoload.php';
+if (!file_exists($autoload)) {
+    http_response_code(500);
+    die('Composer dependencies not installed. Please run: composer install');
+}
+
+require $autoload;
 
 // Bootstrap Laravel and handle the request...
-/** @var Application $app */
-$app = require_once __DIR__.'/../bootstrap/app.php';
+$bootstrap = __DIR__.'/../bootstrap/app.php';
+if (!file_exists($bootstrap)) {
+    http_response_code(500);
+    die('Laravel bootstrap file not found.');
+}
 
-$app->handleRequest(Request::capture());
+/** @var Application $app */
+$app = require_once $bootstrap;
+
+try {
+    $app->handleRequest(Request::capture());
+} catch (\Throwable $e) {
+    // Log error but don't expose sensitive information in production
+    if (env('APP_DEBUG', false)) {
+        throw $e;
+    }
+    http_response_code(500);
+    die('Application error occurred.');
+}
 
