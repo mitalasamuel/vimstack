@@ -27,9 +27,14 @@ try {
   downloadArtifact($apiBase, $remoteJob, $downloadZip);
   println_log($job, "Downloaded: $downloadZip (" . @filesize($downloadZip) . " bytes)");
 
-  write_status($job, 'started', 'deploy', 'Deploying to public/build');
-  deployToPublicBuild($root, $downloadZip);
-  println_log($job, "Deploy complete");
+  if (SKIP_DEPLOY) {
+    write_status($job, 'started', 'deploy', 'Skipping deployment (SKIP_DEPLOY enabled)');
+    println_log($job, "Deployment skipped - artifact available at: $downloadZip");
+  } else {
+    write_status($job, 'started', 'deploy', 'Deploying to public/build');
+    deployToPublicBuild($root, $downloadZip);
+    println_log($job, "Deploy complete");
+  }
 
   write_status($job, 'finished', 'done', 'Success');
 } catch (Throwable $e) {

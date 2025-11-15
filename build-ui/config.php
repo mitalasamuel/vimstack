@@ -10,3 +10,6 @@ define('PROJECT_ROOT', rtrim(getenv('PROJECT_ROOT') ?: dirname(__DIR__), DIRECTO
 // Where to store temp jobs/logs
 define('JOB_ROOT', sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'php_build_jobs');
 if (!is_dir(JOB_ROOT)) { @mkdir(JOB_ROOT, 0777, true); }
+
+// Skip deployment step (set to true to prevent deploying to public/build)
+define('SKIP_DEPLOY', filter_var(getenv('SKIP_DEPLOY') ?: true, FILTER_VALIDATE_BOOLEAN));
