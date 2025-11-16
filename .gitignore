@@ -9,7 +9,8 @@
 /storage/pail
 !/storage/app/public/
 !/storage/app/public/**
-/vendor
+# /vendor - Uncomment for local development, but needed for Vercel deployment
+# For Vercel: Run `composer install --no-dev --optimize-autoloader` and commit vendor
 .env.backup
 .env.production
 .phpactor.json
