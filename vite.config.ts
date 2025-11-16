@@ -1,6 +1,7 @@
 import tailwindcss from '@tailwindcss/vite';
 import laravel from 'laravel-vite-plugin';
 import { resolve } from 'node:path';
+import { existsSync } from 'node:fs';
 import { defineConfig } from 'vite';
 
 function stripUseClientDirective(): import('vite').Plugin {
@@ -51,7 +52,20 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            'ziggy-js': resolve(__dirname, 'vendor/tightenco/ziggy'),
+            // Make ziggy alias conditional - fallback if vendor doesn't exist
+            'ziggy-js': (() => {
+                const ziggyPath = resolve(__dirname, 'vendor/tightenco/ziggy');
+                if (existsSync(ziggyPath)) {
+                    return ziggyPath;
+                }
+                // Fallback for build environments where vendor isn't available yet
+                const fallbackPath = resolve(__dirname, 'node_modules/ziggy-js');
+                if (existsSync(fallbackPath)) {
+                    return fallbackPath;
+                }
+                // Last resort: return the original path (will fail if not found, but better than breaking build)
+                return ziggyPath;
+            })(),
         },
     },
     build: {
