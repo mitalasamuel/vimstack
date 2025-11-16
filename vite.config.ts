@@ -102,6 +102,6 @@ export default defineConfig({
             },
         },
         assetsDir: 'assets',
-        chunkSizeWarningLimit: 1200,
+        chunkSizeWarningLimit: 2000,
     }
 });
