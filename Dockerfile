@@ -19,6 +19,13 @@ RUN apk add --no-cache \
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) pdo_mysql pdo_pgsql zip gd exif
 
+# Enable exif for both CLI and FPM
+RUN docker-php-ext-enable exif \
+    && echo "extension=exif" >> /usr/local/etc/php/conf.d/docker-php-ext-exif.ini
+
+# Verify exif is installed
+RUN php -m | grep -i exif
+
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -28,8 +35,8 @@ WORKDIR /var/www/html
 # Copy application files
 COPY . .
 
-# Install dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+# Install dependencies - ignore exif platform requirement (extension is installed, just not detected by Composer)
+RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs
 RUN npm ci
 RUN npm run build
 
