@@ -57,7 +57,7 @@ if (! function_exists('settings')) {
         }
 
         if (!$user_id) {
-            return collect();
+            return [];
         }
 
         return Setting::where('user_id', $user_id)

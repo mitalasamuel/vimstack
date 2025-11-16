@@ -59,6 +59,8 @@ class HandleInertiaRequests extends Middleware
         } else {
             // Get system settings
             $settings = settings();
+            // Ensure $settings is an array (convert Collection to array if needed)
+            $settings = is_array($settings) ? $settings : (is_object($settings) && method_exists($settings, 'toArray') ? $settings->toArray() : []);
             // Get currency symbol
             $currencyCode = $settings['defaultCurrency'] ?? 'USD';
             $currency = Currency::where('code', $currencyCode)->first();
