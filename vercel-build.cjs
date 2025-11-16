@@ -7,36 +7,36 @@ const fs = require('fs');
 
 console.log('🚀 Starting Vercel build...');
 
-// Check if vendor exists
+// Check if vendor exists - CRITICAL for build because Vite uses it
 const vendorExists = fs.existsSync('./vendor');
 if (!vendorExists) {
-  console.error('❌ vendor directory not found!');
-  console.error('\n📋 SOLUTION:');
+  console.error('❌ ERROR: vendor directory not found!');
+  console.error('');
+  console.error('Vite build requires vendor directory (for ziggy-js alias).');
+  console.error('');
+  console.error('📋 SOLUTION:');
   console.error('   1. Run locally: composer install --no-dev --optimize-autoloader');
-  console.error('   2. Update .gitignore to allow vendor directory (already done)');
-  console.error('   3. Commit vendor: git add vendor && git commit -m "Add vendor for Vercel"');
-  console.error('   4. Push and redeploy');
+  console.error('   2. Commit vendor: git add vendor && git commit -m "Add vendor for Vercel"');
+  console.error('   3. Push: git push');
+  console.error('   4. Redeploy on Vercel');
+  console.error('');
+  console.error('Note: .gitignore has been updated to allow vendor directory.');
   process.exit(1);
+} else {
+  console.log('✅ vendor directory found');
 }
 
-console.log('✅ vendor directory found');
-
-// Install npm dependencies and build
-console.log('📦 Installing npm dependencies...');
-try {
-  execSync('npm ci', { stdio: 'inherit' });
-  console.log('✅ npm dependencies installed');
-} catch {
-  console.error('❌ Failed to install npm dependencies');
-  process.exit(1);
-}
-
+// Vercel automatically runs npm install before buildCommand
+// Just build the frontend assets
 console.log('🔨 Building frontend assets...');
 try {
   execSync('npm run build', { stdio: 'inherit' });
   console.log('✅ Frontend build complete');
-} catch {
+} catch (error) {
   console.error('❌ Failed to build frontend');
+  if (error.stdout) console.error('STDOUT:', error.stdout.toString());
+  if (error.stderr) console.error('STDERR:', error.stderr.toString());
+  console.error('Error:', error.message);
   process.exit(1);
 }
 
