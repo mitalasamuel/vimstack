@@ -3,7 +3,7 @@
         'name' => 'thegameplan/thegameplan',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '8539be0015eb0dc70d622bbdd3dbb0c4c6c7fde1',
+        'reference' => 'f364bd781f0c60b6dab2f97f096b7456ebc05154',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -788,7 +788,7 @@
         'thegameplan/thegameplan' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '8539be0015eb0dc70d622bbdd3dbb0c4c6c7fde1',
+            'reference' => 'f364bd781f0c60b6dab2f97f096b7456ebc05154',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
