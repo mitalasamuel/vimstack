@@ -1,12 +1,12 @@
 [phases.setup]
-nixPkgs = ["php82", "nodejs_20", "composer"]
-cmd = ""
+nixPkgs = ["php82", "nodejs_20"]
+cmd = "curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer"
 
 [phases.install]
-cmd = "mkdir -p storage/framework/{cache,sessions,views} storage/logs bootstrap/cache && composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs --no-scripts && npm ci --prefer-offline --no-audit"
+cmd = "mkdir -p storage/framework/{cache,sessions,views} storage/logs bootstrap/cache && php /usr/local/bin/composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs && npm ci --prefer-offline --no-audit"
 
 [phases.build]
-cmd = "npm run build && php artisan package:discover --ansi && php artisan config:cache && php artisan route:cache && php artisan view:cache"
+cmd = "npm run build && php artisan config:cache && php artisan route:cache && php artisan view:cache"
 
 [start]
 cmd = "php artisan serve --host=0.0.0.0 --port=$PORT --public=public"
