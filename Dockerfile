@@ -23,9 +23,6 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 RUN docker-php-ext-enable exif \
     && echo "extension=exif" >> /usr/local/etc/php/conf.d/docker-php-ext-exif.ini
 
-# Verify exif is installed
-RUN php -m | grep -i exif
-
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -35,12 +32,12 @@ WORKDIR /var/www/html
 # Copy application files
 COPY . .
 
-# Ensure Laravel storage directories exist for Artisan commands during build
-RUN mkdir -p storage/framework/{cache,sessions,views} storage/logs
+# Ensure Laravel storage directories exist
+RUN mkdir -p storage/framework/{cache,sessions,views} storage/logs bootstrap/cache
 
-# Install dependencies - ignore exif platform requirement (extension is installed, just not detected by Composer)
+# Install dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs
-RUN npm ci
+RUN npm ci --prefer-offline --no-audit
 RUN npm run build
 
 # Set permissions
@@ -69,9 +66,8 @@ server {
 }
 EOF
 
-# Expose port
+# Expose port (Coolify will map this)
 EXPOSE 80
 
 # Start services
 CMD php-fpm -D && nginx -g 'daemon off;'
-
