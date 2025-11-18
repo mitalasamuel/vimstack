@@ -121,7 +121,10 @@ class Data implements \ArrayAccess, \Countable, \IteratorAggregate, \Stringable
         yield from $value;
     }
 
-    public function __get(string $key): mixed
+    /**
+     * @return mixed
+     */
+    public function __get(string $key)
     {
         if (null !== $data = $this->seek($key)) {
             $item = $this->getStub($data->data[$data->position][$data->key]);
@@ -262,8 +265,10 @@ class Data implements \ArrayAccess, \Countable, \IteratorAggregate, \Stringable
 
     /**
      * Dumps data with a DumperInterface dumper.
+     *
+     * @return void
      */
-    public function dump(DumperInterface $dumper): void
+    public function dump(DumperInterface $dumper)
     {
         $refs = [0];
         $cursor = new Cursor();
@@ -293,7 +298,7 @@ class Data implements \ArrayAccess, \Countable, \IteratorAggregate, \Stringable
         if (!$item instanceof Stub) {
             $cursor->attr = [];
             $type = \gettype($item);
-            if ($item && 'array' === $type) {
+            if ('array' === $type && $item) {
                 $item = $this->getStub($item);
             }
         } elseif (Stub::TYPE_REF === $item->type) {
