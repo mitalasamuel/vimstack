@@ -6,7 +6,7 @@ cmds = [
 
 [phases.install]
 cmds = [
-  "composer install --no-dev --optimize-autoloader --no-interaction",
+  "php /usr/local/bin/composer install --no-dev --optimize-autoloader --no-interaction",
   "npm ci --prefer-offline --no-audit"
 ]
 
