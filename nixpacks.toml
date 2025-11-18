@@ -1,0 +1,12 @@
+[phases.setup]
+nixPkgs = ["php82", "nodejs_20", "composer"]
+cmd = ""
+
+[phases.install]
+cmd = "mkdir -p storage/framework/{cache,sessions,views} storage/logs bootstrap/cache && composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs --no-scripts && npm ci --prefer-offline --no-audit"
+
+[phases.build]
+cmd = "npm run build && php artisan package:discover --ansi && php artisan config:cache && php artisan route:cache && php artisan view:cache"
+
+[start]
+cmd = "php artisan serve --host=0.0.0.0 --port=$PORT --public=public"
