@@ -35,6 +35,9 @@ WORKDIR /var/www/html
 # Copy application files
 COPY . .
 
+# Ensure Laravel storage directories exist for Artisan commands during build
+RUN mkdir -p storage/framework/{cache,sessions,views} storage/logs
+
 # Install dependencies - ignore exif platform requirement (extension is installed, just not detected by Composer)
 RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs
 RUN npm ci
